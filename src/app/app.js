@@ -1,10 +1,17 @@
 $(function(){
     // jQuery: $, Lodash: _, JointJS: joint
+    const defaultValues = {
+        blockSize: 60,
+        maxHeight: 10,
+        minLength: 4,
+        maxLength: 15,
+    };
+
     const WaterPoolModel = Backbone.Model.extend({
         defaults: {
-            minLength: 4,
-            maxLength: 15,
-            maxHeight: 10,
+            minLength: defaultValues.minLength,
+            maxLength: defaultValues.maxLength,
+            maxHeight: defaultValues.maxHeight,
             heights: [4, 2, 0, 3, 2, 5],
             length: 6,
         },
@@ -14,7 +21,7 @@ $(function(){
             this.set('nLength', nLength);
             const heights = [], maxHeight = this.get('maxHeight');
             for (let i = 0; i < nLength; i++) {
-                heights.push(parseInt(maxHeight * Math.random()));
+                heights.push(parseInt(maxHeight * Math.pow(Math.random(), 2)));
             }
             this.set('heights', heights);
         },
@@ -33,9 +40,10 @@ $(function(){
             leftMax.push(0);
             rightMax.unshift(0);
     
-            let waterLevels = [];
+            let waterLevels = [0];
             for (let i = 1; i < n - 1; i++)
                 waterLevels.push(Math.max(0, Math.min(leftMax[i], rightMax[i]) - heights[i]));
+            waterLevels.push(0);
 
             return { waterLevels, trap: waterLevels.reduce((a, b) => a + b)};
         }
@@ -62,14 +70,18 @@ $(function(){
             this.paper = new joint.dia.Paper({
                 el: $('#water-pool').first(),
                 model: this.graph,
-                width: 1000,
-                height: 750,
-                gridSize: 1
+                width: 100 + defaultValues.blockSize * defaultValues.maxLength,
+                height: 150 + defaultValues.blockSize * defaultValues.maxHeight,
+                gridSize: 1,
+                interactive: false
             });
 
             this.render();
         },
         drawLines: function() {
+            const maxLength = this.model.get('maxLength');
+            const maxHeight = this.model.get('maxHeight');
+
             var ptCenter = new joint.shapes.standard.Circle();
             ptCenter.position(50, 700);
             ptCenter.resize(0, 0);
@@ -94,30 +106,34 @@ $(function(){
         },
         drawBlocks: function() {
             const heights = this.model.get('heights');
+            const waterLevels = this.model.trap().waterLevels;
             const blockModel = new joint.shapes.standard.Rectangle();
             blockModel.resize(60, 60);
             blockModel.attr({ body: { fill: 'gray' } });
+            const waterModel = blockModel.clone();
+            waterModel.attr({ body: { fill: '#2178d5' } });
+
             for (let i = 0; i < heights.length; i++) {
                 const height = heights[i];
+                const waterLevel = waterLevels[i];
                 if (height) {
                     for (let j = 0; j < height; j++) {
                         const block = blockModel.clone(0);
                         block.position(50 + 60 * i, 700 - 60 * (j + 1));
                         block.addTo(this.graph);
-                    }
+                    }   
+                }
+                for (let k = 0; k < waterLevel; k++) {
+                    const water = waterModel.clone(0);
+                    water.position(50 + 60 * i, 700 - 60 * height - (k + 1) * 60);
+                    water.addTo(this.graph);
                 }
             }
         },
-        drawWater: function() {
-            const waterLevels = this.model.trap().waterLevels;
-            console.log(waterLevels);
-        },
         drawDiagram: function() {
-            // 60 * 60
             this.graph.clear();
             this.drawLines();
             this.drawBlocks();
-            this.drawWater();
         },
         render: function () {
             this.$el.html(this.template({
