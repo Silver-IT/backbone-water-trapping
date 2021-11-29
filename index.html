@@ -5,31 +5,30 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>Water Trapping</title>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+		<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jointjs/2.1.0/joint.css" />
 		<link rel="stylesheet" href="assets/css/app.css"/>
 	</head>
 	<body>
-		<main></main>
-	  
-		<script type="text/template" id="water-pool-template">
+		<main>
 			<div class="container pt-5">
 				<div class="row">
 					<div class="col-12">
-						<div id="water-pool" class="water-pool-wrapper">
-							<div class="water-pool-item water-pool-elevation"></div>
-							<div class="water-pool-item water-pool-fill"></div>
-							<div class="water-pool-item water-pool-elevation"></div>
-						</div>
+						<div id="water-pool" class="border border-secondary rounded"></div>
 					</div>
 				</div>
-				<div class="row align-items-center py-2">
-					<div class="col-md-8">
-						<p><b>Entry heights</b>: <span id="entry-heights">{{heights}}</span></p>
-						<p class="mb-0"><b>Amount of stored water</b>: <span id="stored-water">{{trap}}</span></p>
-					</div>
-					<div class="col-md-4">
-						<button id="btn-generate" class="btn btn-success">Generate</button>
-						<button id="btn-test" class="btn btn-primary">Test</button>
-					</div>
+				<div id="water-pool-description"></div>
+			</div>
+		</main>
+	  
+		<script type="text/template" id="water-pool-template">
+			<div class="row align-items-center py-2">
+				<div class="col-md-8">
+					<p><b>Entry heights</b>: <span id="entry-heights">{{heights}}</span></p>
+					<p class="mb-0"><b>Amount of stored water</b>: <span id="stored-water">{{trap}}</span></p>
+				</div>
+				<div class="col-md-4">
+					<button id="btn-generate" class="btn btn-success float-right">Generate</button>
+					<button id="btn-test" class="btn btn-primary">Test</button>
 				</div>
 			</div>
 		</script>
@@ -40,8 +39,9 @@
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js" type="text/javascript"></script>		
 		<script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.4.0/backbone-min.js" type="text/javascript"></script>
 		<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.4.0/backbone-min.js" type="text/javascript"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jointjs/2.1.0/joint.js"></script>
 
 		<script src="src/app/app.js"></script>
 	</body>
