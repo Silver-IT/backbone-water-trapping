@@ -17,7 +17,7 @@
 
 ## Environment
 
-* [CDN](https://yarnpkg.com/)
+* [CDN](https://cdnjs.com/)
 
 * Web Browser
 
