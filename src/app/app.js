@@ -53,14 +53,10 @@ $(function(){
         template: Handlebars.compile($("#water-pool-template").html()),
         model: new WaterPoolModel(),
         events: {
-            "click #btn-generate": "refreshWaterPoolModel",
-            "click #btn-test": "onClickTestButton",
+            "click #btn-generate": "refreshWaterPoolModel"
         },
         refreshWaterPoolModel: function() {
           this.model.refresh();
-        },
-        onClickTestButton: function() {
-          console.log(_.concat([1, 3, 5], [2, 4]));
         },
         initialize: function () {
             this.listenTo(this.model, 'change', this.render);
@@ -70,7 +66,7 @@ $(function(){
             this.paper = new joint.dia.Paper({
                 el: $('#water-pool').first(),
                 model: this.graph,
-                width: 100 + defaultValues.blockSize * defaultValues.maxLength,
+                width: 150 + defaultValues.blockSize * defaultValues.maxLength,
                 height: 150 + defaultValues.blockSize * defaultValues.maxHeight,
                 gridSize: 1,
                 interactive: false
@@ -79,16 +75,13 @@ $(function(){
             this.render();
         },
         drawLines: function() {
-            const maxLength = this.model.get('maxLength');
-            const maxHeight = this.model.get('maxHeight');
-
             var ptCenter = new joint.shapes.standard.Circle();
             ptCenter.position(50, 700);
             ptCenter.resize(0, 0);
             ptCenter.addTo(this.graph);
 
             var ptTop = ptCenter.clone();
-            ptTop.translate(0, -650);
+            ptTop.translate(0, -1 * (defaultValues.maxHeight + 1) * defaultValues.blockSize);
             ptTop.addTo(this.graph);
 
             var lnVertical = new joint.shapes.standard.Link();
@@ -97,12 +90,35 @@ $(function(){
             lnVertical.addTo(this.graph);
 
             var ptRight = ptCenter.clone();
-            ptRight.translate(900, 0);
+            ptRight.translate((defaultValues.maxLength + 1) * defaultValues.blockSize, 0);
             ptRight.addTo(this.graph);
 
             var lnHorizontal = lnVertical.clone();
             lnHorizontal.target(ptRight);
             lnHorizontal.addTo(this.graph);
+        },
+        drawPoints: function() {
+            const maxLength = this.model.get('maxLength');
+            const maxHeight = this.model.get('maxHeight');
+
+            const ptCenter = new joint.shapes.standard.Rectangle();
+            ptCenter.position(50, 715);
+            ptCenter.resize(0, 0);
+            ptCenter.attr({ label: { text: '(0, 0)' } });
+            ptCenter.addTo(this.graph);
+
+            for (let i = 1; i <= maxLength; i++) {
+                const point = ptCenter.clone();
+                point.position(50 + i * defaultValues.blockSize, 715);
+                point.attr({ label: { text: `${i}` } });
+                point.addTo(this.graph);
+            }
+            for (let j = 1; j <= maxHeight; j++) {
+                const point = ptCenter.clone();
+                point.position(40, 700 - defaultValues.blockSize * j);
+                point.attr({ label: { text: `${j}` } });
+                point.addTo(this.graph);
+            }
         },
         drawBlocks: function() {
             const heights = this.model.get('heights');
@@ -133,6 +149,7 @@ $(function(){
         drawDiagram: function() {
             this.graph.clear();
             this.drawLines();
+            this.drawPoints();
             this.drawBlocks();
         },
         render: function () {
